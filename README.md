@@ -14,5 +14,5 @@
     <li>Cada jogador começa com 1 carta e pode decidir se pede outra ou passa a vez para o oponente. Uma vez que passou a vez não pode mais pedir cartas.</li>
     <li>O jogador que tiver a pontuação mais próxima ou igual a 21 ganha o jogo.</li>
     <li>Caso os dois jogadores empatem na pontuação é declarado empate e os jogadores podem ou não continuar jogando.</li>
-
+    <li>Haverá também a opção de um jogador desafiar um computador que simula as ações de um outro jogador.
 </ul>
