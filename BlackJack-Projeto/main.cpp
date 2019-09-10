@@ -14,6 +14,7 @@ void geraPontuacao(int pontuacaoTotal);
 int  verificaAs(int numeroGerado, int pontuacaoTotal);
 int operacao, pontosJog1, pontosJog2;
 string jogadorUm, jogadorDois;
+bool redo = true;
 
 int cartas[4][13] = {{1,2,3,4,5,6,7,8,9,10,10,10,10},
                     {1,2,3,4,5,6,7,8,9,10,10,10,10},
@@ -30,31 +31,38 @@ int main()
 
 void menuInicio(){
     cout << "BEM VINDO AO BLACKJACK!" << endl << endl;
-
     cout << "Jogar com amigo (1)" << endl;
     cout << "Jogar contra o computador (2)" << endl;
-    cout << "Instruções de como jogar (3)" << endl;
+    cout << "InstruÃ§Ãµes de como jogar (3)" << endl;
     cout << "Sair (4)" << endl;
     cout << "O que deseja fazer? ";
     cin >> operacao;
-
-    switch(operacao){
-        case 1:
-            menuDoisJogadores();
-            break;
-        case 2:
-            menuUmJogador();
-            break;
-        case 3:
-            menuInstrucoes();
-            break;
-        case 4:
-            menuSaida();
-            break;
-        default:
-            cout << "Operação inválida" << endl;
+    
+    while(redo){
+        switch(operacao){
+            case 1:
+                menuDoisJogadores();
+                redo = false;
+                break;
+            case 2:
+                menuUmJogador();
+                redo = false;
+                break;
+            case 3:
+                menuInstrucoes();
+                redo = false;
+                break;
+            case 4:
+                menuSaida();
+                break;
+            default:
+                cout << "OperaÃ§Ã£o invÃ¡lida, entre uma das opÃ§Ãµes abaixo:  \n" << endl;
+                menuInicio();
+                redo = true;
+        }
 
     }
+    
 }
 
 void menuDoisJogadores(){
@@ -66,7 +74,7 @@ void menuDoisJogadores(){
     cout << "Qual o nome do segundo jogador?" << endl;
     cin >> jogadorDois;
     cout << endl;
-    cout << jogadorUm << " e " << jogadorDois << " se preparem o jogo vai começar!!" << endl;
+    cout << jogadorUm << " e " << jogadorDois << " se preparem o jogo vai comeÃ§ar!!" << endl;
     iniciaJogo(jogadorUm, jogadorDois);
 
 }
@@ -77,19 +85,19 @@ void menuUmJogador(){
     cout << "Qual o seu nome do jogador?" << endl;
     cin >> jogadorUm;
     jogadorDois = "computador";
-    cout << jogadorUm << " contra o " << jogadorDois <<" vai começar!! EITA CARAIIII!" << endl;
+    cout << jogadorUm << " contra o " << jogadorDois <<" vai comeÃ§ar!! EITA CARAIIII!" << endl;
     iniciaJogo(jogadorUm, jogadorDois);
 
 }
 
 void menuInstrucoes(){
     cout << endl;
-    cout << "BlackJack é um jogo que usa um baralho francês de 52 cartas para definir a pontuação." << endl;
-    cout << "Um baralho francês possui cartas de numeração de 2 a 10, onde no BlackJack equivale a uma pontuação proporcional a numeração." << endl;
-    cout << "Também há cartas especiais que são A, J, Q, K. As cartas J, Q e K valem 10 pontos, já a carta A pode assumir o valor de 1 ou de 11 dependendo da sua pontuação atual" << endl;
-    cout << "O jogador que juntar 21 pontos ou chegar mais próximo dos 21 é o ganhador!!" << endl;
-    cout << "O jogo começa dando uma carta inicial para o jogador e ele pode decidir entre pedir outra carta ou parar com a pontuação que tem." << endl;
-    cout << "Caso o jogador ultrapasse os 21 pontos ele perde, porém se o outro jogador também ultrapassar os 21 pontos então é declarado um empate." << endl;
+    cout << "BlackJack Ã© um jogo que usa um baralho francÃªs de 52 cartas para definir a pontuaÃ§Ã£o." << endl;
+    cout << "Um baralho francÃµs possui cartas de numeraÃ§Ã£o de 2 a 10, onde no BlackJack equivale a uma pontuaÃ§Ã£o proporcional a numeraÃ§Ã£o." << endl;
+    cout << "TambÃ©m ha cartas especiais que sÃ£o A, J, Q, K. As cartas J, Q e K valem 10 pontos, jÃ¡ a carta A pode assumir o valor de 1 ou de 11 dependendo da sua pontuaï¿½ï¿½o atual" << endl;
+    cout << "O jogador que juntar 21 pontos ou chegar mais prÃ³ximo dos 21 Ã© o ganhador!!" << endl;
+    cout << "O jogo comeÃ§a dando uma carta inicial para o jogador e ele pode decidir entre pedir outra carta ou parar com a pontuaÃ§Ã£o que tem." << endl;
+    cout << "Caso o jogador ultrapasse os 21 pontos ele perde, porÃ©m se o outro jogador tambÃ©m ultrapassar os 21 pontos entÃ£o Ã© declarado um empate." << endl;
 
     cout << "Digite Y para voltar ao menu inicial?" << endl;
     string escolha;
@@ -98,9 +106,6 @@ void menuInstrucoes(){
      if(escolha == "Y" || escolha == "y"){
         menuInicio();
      }
-
-
-
 }
 
 void menuSaida(){
@@ -121,14 +126,14 @@ void iniciaJogo(string nome1, string nome2){
     pontosJog1 += pontoGerado;
     if(pontosJog1 >= 21){
         cout << endl;
-        cout << jogadorUm << " você tem um total de: " << pontosJog1 << " pontos" << endl;
-        cout << jogadorUm << " você ultrapassou os 21 pontos. " << endl << endl;
+        cout << jogadorUm << " vocÃª tem um total de: " << pontosJog1 << " pontos" << endl;
+        cout << jogadorUm << " vocÃª ultrapassou os 21 pontos. " << endl << endl;
         goto JOGADORDOIS;
 
     }
     cout << endl;
-    cout << jogadorUm << " você tem um total de: " << pontosJog1 << " pontos" << endl;
-    cout << jogadorUm << " quer pedir outra carta ? Y/N " << endl;
+    cout << jogadorUm << " VocÃª tem um total de: " << pontosJog1 << " pontos" << endl;
+    cout << jogadorUm << " Quer pedir outra carta? Y/N " << endl;
 
     cin >> escolha;
 
@@ -145,14 +150,14 @@ void iniciaJogo(string nome1, string nome2){
         pontosJog2 += pontoGerado;
         if(pontosJog2 >= 21){
             cout << endl;
-            cout << jogadorDois << " você tem um total de:" << pontosJog2 << " pontos" << endl;
-            cout << jogadorDois << " você ultrapassou os 21 pontos. " << endl << endl;
+            cout << jogadorDois << " VocÃª tem um total de:" << pontosJog2 << " pontos" << endl;
+            cout << jogadorDois << " VocÃª ultrapassou os 21 pontos. " << endl << endl;
             goto DECISAO;
 
         }else{
             if(pontosJog2 <= 17){
                 cout << endl;
-                cout << jogadorDois << " você tem um total de:" << pontosJog2 << " pontos" << endl;
+                cout << jogadorDois << " VocÃª tem um total de:" << pontosJog2 << " pontos" << endl;
                 goto RETORNO2COMPUTADOR;
             }else{
                 goto DECISAO;
@@ -170,14 +175,14 @@ void iniciaJogo(string nome1, string nome2){
         pontosJog2 += pontoGerado;
         if(pontosJog2 >= 21){
             cout << endl;
-            cout << jogadorDois << " você tem um total de:" << pontosJog2 << " pontos" << endl;
-            cout << jogadorDois << " você ultrapassou os 21 pontos. " << endl << endl;
+            cout << jogadorDois << " VocÃª tem um total de:" << pontosJog2 << " pontos" << endl;
+            cout << jogadorDois << " VocÃª ultrapassou os 21 pontos. " << endl << endl;
             goto DECISAO;
 
         }
         cout << endl;
-        cout << jogadorDois << " você tem um total de:" << pontosJog2 << " pontos" << endl;
-        cout << jogadorDois << " quer pedir outra carta ? Y/N" << endl;
+        cout << jogadorDois << " VocÃª tem um total de:" << pontosJog2 << " pontos" << endl;
+        cout << jogadorDois << " Quer pedir outra carta ? Y/N" << endl;
 
         cin >> escolha;
         if(escolha == "Y" || escolha == "y"){
@@ -196,15 +201,26 @@ void iniciaJogo(string nome1, string nome2){
                     menuSaida();
                 }
             }else if(pontosJog1 > 21 && pontosJog2 <= 21){
-                cout << "Parabéns " << jogadorDois << " você ganhou essa desgraça! Você tinha " << pontosJog2 << " e o outro jogador tinha " << pontosJog1 << endl;
+                cout << "ParabÃ©ns " << jogadorDois << " vocÃª ganhou essa desgraÃ§a! VocÃª tinha " << pontosJog2 << " e o outro jogador tinha " << pontosJog1 << endl;
             }else if(pontosJog1 <= 21 && pontosJog2 > 21){
-                cout << "Parabéns " << jogadorUm << " você ganhou essa desgraça! Você tinha " << pontosJog1 << " e o outro jogador tinha " << pontosJog2  << endl;
+                cout << "ParabÃ©ns " << jogadorUm << " vocÃª ganhou essa desgraÃ§a! VocÃª tinha " << pontosJog1 << " e o outro jogador tinha " << pontosJog2  << endl;
             }else if(pontosJog2 < pontosJog1){
-                cout << "Parabéns " << jogadorUm << " você ganhou essa desgraça! Você tinha " << pontosJog1 << " e o outro jogador tinha " << pontosJog2  << endl;
+                cout << "ParabÃ©ns " << jogadorUm << " vocÃª ganhou essa desgraÃ§a! VocÃª tinha " << pontosJog1 << " e o outro jogador tinha " << pontosJog2  << endl;
+                cout << "Desejam jogar outra vez? Y/N" << endl;
+                cin>> escolha;
+                if(escolha == "Y" || escolha == "y"){
+                    pontosJog1 = 0;
+                    pontosJog2 = 0;
+                    goto RETORNO1;
+
+                }
+                else{
+                    menuSaida();
+                }
             }else if(pontosJog1 < pontosJog2){
-                cout << "Parabéns " << jogadorDois << " você ganhou essa desgraça! Você tinha " << pontosJog2 << " e o outro jogador tinha " << pontosJog1  << endl;
+                cout << "Parabï¿½ns " << jogadorDois << " vocï¿½ ganhou essa desgraï¿½a! Vocï¿½ tinha " << pontosJog2 << " e o outro jogador tinha " << pontosJog1  << endl;
             }else{
-                cout << "Os dois jogadores possuem a mesma pontução. EMPATE!!" << endl;
+                cout << "Os dois jogadores possuem a mesma pontuaÃ§Ã£o. EMPATE!!" << endl;
                 cout << "Desejam jogar outra vez? Y/N" << endl;
                 cin >> escolha;
                 if(escolha == "Y" || escolha == "y"){
@@ -234,4 +250,3 @@ int verificaAs(int numeroGerado, int pontuacaoTotal){
 
     return saida;
 }
-
