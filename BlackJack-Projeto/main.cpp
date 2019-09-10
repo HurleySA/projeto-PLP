@@ -119,6 +119,13 @@ void iniciaJogo(string nome1, string nome2){
     int pontoGerado = cartas[i][j];
     pontoGerado = verificaAs(pontoGerado, pontosJog1);
     pontosJog1 += pontoGerado;
+    if(pontosJog1 >= 21){
+        cout << endl;
+        cout << jogadorUm << " você tem um total de: " << pontosJog1 << " pontos" << endl;
+        cout << jogadorUm << " você ultrapassou os 21 pontos. " << endl << endl;
+        goto JOGADORDOIS;
+
+    }
     cout << endl;
     cout << jogadorUm << " você tem um total de: " << pontosJog1 << " pontos" << endl;
     cout << jogadorUm << " quer pedir outra carta ? Y/N " << endl;
@@ -127,7 +134,33 @@ void iniciaJogo(string nome1, string nome2){
 
     if(escolha == "Y" || escolha == "y"){
         goto RETORNO1;
+    }else if (jogadorDois == "computador"){
+        JOGADORDOISCOMPUTADOR:;
+        cout << "Sua vez de jogar " << jogadorDois << endl;
+        RETORNO2COMPUTADOR:;
+        i = rand()%3;
+        j = rand()%13;
+        pontoGerado = cartas[i][j];
+        pontoGerado = verificaAs(pontoGerado, pontosJog2);
+        pontosJog2 += pontoGerado;
+        if(pontosJog2 >= 21){
+            cout << endl;
+            cout << jogadorDois << " você tem um total de:" << pontosJog2 << " pontos" << endl;
+            cout << jogadorDois << " você ultrapassou os 21 pontos. " << endl << endl;
+            goto DECISAO;
+
+        }else{
+            if(pontosJog2 <= 17){
+                cout << endl;
+                cout << jogadorDois << " você tem um total de:" << pontosJog2 << " pontos" << endl;
+                goto RETORNO2COMPUTADOR;
+            }else{
+                goto DECISAO;
+            }
+        }
+
     }else{
+        JOGADORDOIS:;
         cout << "Sua vez de jogar " << jogadorDois << endl;
         RETORNO2:;
         i = rand()%3;
@@ -135,17 +168,33 @@ void iniciaJogo(string nome1, string nome2){
         pontoGerado = cartas[i][j];
         pontoGerado = verificaAs(pontoGerado, pontosJog2);
         pontosJog2 += pontoGerado;
+        if(pontosJog2 >= 21){
+            cout << endl;
+            cout << jogadorDois << " você tem um total de:" << pontosJog2 << " pontos" << endl;
+            cout << jogadorDois << " você ultrapassou os 21 pontos. " << endl << endl;
+            goto DECISAO;
+
+        }
         cout << endl;
         cout << jogadorDois << " você tem um total de:" << pontosJog2 << " pontos" << endl;
         cout << jogadorDois << " quer pedir outra carta ? Y/N" << endl;
 
         cin >> escolha;
-
         if(escolha == "Y" || escolha == "y"){
             goto RETORNO2;
         }else{
+            DECISAO:;
             if(pontosJog1 > 21 && pontosJog2 > 21 ){
-                cout << "empate" << endl;
+                cout << "Os dois jogadores tiveram mais que 21 pontos. EMPATE!!" << endl;
+                cout << "Desejam jogar outra vez? Y/N" << endl;
+                cin >> escolha;
+                if(escolha == "Y" || escolha == "y"){
+                    pontosJog1 = 0;
+                    pontosJog2 = 0;
+                    goto RETORNO1;
+                }else{
+                    menuSaida();
+                }
             }else if(pontosJog1 > 21 && pontosJog2 <= 21){
                 cout << "Parabéns " << jogadorDois << " você ganhou essa desgraça! Você tinha " << pontosJog2 << " e o outro jogador tinha " << pontosJog1 << endl;
             }else if(pontosJog1 <= 21 && pontosJog2 > 21){
@@ -153,9 +202,18 @@ void iniciaJogo(string nome1, string nome2){
             }else if(pontosJog2 < pontosJog1){
                 cout << "Parabéns " << jogadorUm << " você ganhou essa desgraça! Você tinha " << pontosJog1 << " e o outro jogador tinha " << pontosJog2  << endl;
             }else if(pontosJog1 < pontosJog2){
-                cout << "Parabéns " << jogadorDois << "você ganhou essa desgraça! Você tinha " << pontosJog2 << " e o outro jogador tinha " << pontosJog1  << endl;
+                cout << "Parabéns " << jogadorDois << " você ganhou essa desgraça! Você tinha " << pontosJog2 << " e o outro jogador tinha " << pontosJog1  << endl;
             }else{
-                cout << "empate" << endl;
+                cout << "Os dois jogadores possuem a mesma pontução. EMPATE!!" << endl;
+                cout << "Desejam jogar outra vez? Y/N" << endl;
+                cin >> escolha;
+                if(escolha == "Y" || escolha == "y"){
+                    pontosJog1 = 0;
+                    pontosJog2 = 0;
+                    goto RETORNO1;
+                }else{
+                    menuSaida();
+                }
             }
         }
     }
