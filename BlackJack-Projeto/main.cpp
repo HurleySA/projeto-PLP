@@ -218,7 +218,7 @@ void iniciaJogo(string nome1, string nome2){
                     menuSaida();
                 }
             }else if(pontosJog1 < pontosJog2){
-                cout << "Parab�ns " << jogadorDois << " voc� ganhou essa desgra�a! Voc� tinha " << pontosJog2 << " e o outro jogador tinha " << pontosJog1  << endl;
+                cout << "Parabéns " << jogadorDois << " você ganhou essa desgraça! Você tinha " << pontosJog2 << " e o outro jogador tinha " << pontosJog1  << endl;
             }else{
                 cout << "Os dois jogadores possuem a mesma pontuação. EMPATE!!" << endl;
                 cout << "Desejam jogar outra vez? Y/N" << endl;
