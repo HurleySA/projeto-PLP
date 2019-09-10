@@ -1,4 +1,6 @@
 # depslib dependency file v1.0
-1568076439 source:c:\users\matheus\desktop\pratica-c-plp\praticas-c-plp\blackjack-projeto\main.cpp
+1568085528 source:c:\users\matheus\desktop\pratica-c-plp\praticas-c-plp\blackjack-projeto\main.cpp
 	<iostream>
+	<stdlib.h>
+	<time.h>
 
