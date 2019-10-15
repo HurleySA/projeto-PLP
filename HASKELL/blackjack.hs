@@ -53,10 +53,9 @@ contador :: Int -> Int
 contador k = k + contador
 
 jogo :: Int -> [Int] -> Int -> Int -> IO String
-jogo 1 = do
+jogo 1 deck pt1 pt2 = do
     jogada <- getLine
     cont <- contador
-    cont jogada
-    if(cont > 21)
-        jogo cont
+    if(jogada == 'y')
+        jogo 1 tail(deck) (pt1+head(deck)) pt2
     else do
