@@ -1,11 +1,22 @@
 # PROJETO-PLP
 
 <h1>Black Jack</h1>
-<p align="center"><img src="https://media.giphy.com/media/l2Sq2mPVJr4tfk436/giphy.gif" width=40%>
+<p align="center"><img src="http://www.myiconfinder.com/uploads/iconsets/256-256-ff801969516ba3216d63e2ef3c29050c-blackjack.png" width=30%>
+<div align="center">
+  <!-- Stability -->
+  <a href="https://github.com/HurleySA/projeto-PLP/tree/master/HASKELL">
+    <img src="https://img.shields.io/badge/Haskell-64.5%25-blueviolet"
+      alt="" />
+  </a>
+  </a>
+  <!-- NPM version -->
+  <a href="https://github.com/HurleySA/projeto-PLP/tree/master/BlackJack-Projeto">
+    <img src="https://img.shields.io/badge/C%2B%2B-35.5%25-ff69b4"
+      alt="" />
+  </a>
+</div>
 
-## Implementaçes 
-- [C++](https://github.com/HurleySA/projeto-PLP/tree/master/BlackJack-Projeto)
-- [Haskell](https://github.com/HurleySA/projeto-PLP/tree/master/HASKELL)
+
 ### Regras:
 - Jogador pode no máximo acumular 21 pontos.
 - Ultrapassar os 21 pontos equivale a derrota.</li>
