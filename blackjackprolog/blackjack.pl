@@ -18,6 +18,10 @@ card("J",  10).
 card("Q",  10).
 card("K",  10).
 
+pontosplayer1(0).
+pontosplayer2(0).
+pontospc(0).
+
 cartas(["Ás", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
         "Ás", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
         "Ás", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
@@ -78,6 +82,10 @@ opcao("4"):-
     nl, writeln('Obrigado por ter jogado BlackJack!'), nl,
     halt.
 
+opcao(_):-
+    writeln("Operação inválida, entre uma das opções abaixo:  "),
+    menu.
+
 verifica_resp(Resposta, 1, 2):-
     write(Resposta),
     (   Resposta == "y"
@@ -106,18 +114,6 @@ verifica_resp(Resposta, 2, 1):-
         ).
 
 
-% verifica_resp("n", 1, 2):-
-%     player2(Cards).
-
-% verifica_resp("N", 1, 2):-
-%     player2(Cards).
-
-% verifica_resp("n", 1, 2):-
-%     player2(Cards).
-
-% verifica_resp("Y", 1, 2):-
-%     player1(Cards).
-
 % verifica_resp("n", 1, C):-
 %     playerpc(cartas(Cartas)).
 
@@ -131,22 +127,19 @@ verifica_resp(Resposta, 2, 1):-
 % verifica_resp("n", 1, C):-
 %     playerpc(cartas(Cartas)).
 
-% verifica_resp("Y", 2, 1):-
-%     player2(cartas(Cartas).
 
-% verifica_resp("y", 2, 1):-
-%     player2(cartas(Cartas).
+setPontosPlayer1():-
+    retract(pontosplayer1(X)), NewPontosPlayer1 is X + 1,
+    assert(pontos(NewPontosPlayer1)).
 
-% verifica_resp("N", 2, 1):-
-
-% verifica_resp("n", 2, 1):-
-
+setPontosPlayer2():-
+    retract(pontosplayer2(X)), NewPontosPlayer2 is X + 1,
+    assert(pontos(NewPontosPlayer1)).
 
 alteraCartas(Element):-
     cartas(Cartas),
     select(Element,Cartas ,NewCartas), nl,
     write(Element),nl,
-    write(NewCartas),
     retract(cartas(Cartas)),
     assert(cartas(NewCartas)).
     
@@ -155,17 +148,17 @@ retira_carta(1) :-
     cartas(List),
     write(List),
     random_member(Element, List),
-    alteraCartas(Element),
-    write("~w, você quer tirar uma carta? y/n? "), nl,
-    lerString(Str),
+    alteraCartas(Element), nl,
+    write("Player 1, você quer tirar uma carta? (y/n) "), nl,
+    lerString(Str), nl,
     verifica_resp(Str, 1, 2).
 
 retira_carta(2) :-
     cartas(List),
     random_member(Element, List),
-    alteraCartas(Element),
-    write('~w, você quer tirar uma carta? y/n? '), nl,
-    lerString(Str),
+    alteraCartas(Element), nl,
+    write("Player 2, você quer tirar uma carta? (y/n) "), nl,
+    lerString(Str), nl,
     verifica_resp(Str, 1, 2).
 
 retira_carta(c) :-
@@ -176,9 +169,12 @@ retira_carta(c) :-
 
 :- dynamic cartas/1.
 
+:- dynamic pontosplayer1/1.
+
+:- dynamic pontosplayer2/1.
+
+:- dynamic pontospc/1.
 menu:-
-    nl,
-    writeln('BEM VINDO AO BLACKJACK!'),
     writeln('Jogar com amigo (1)'),
     writeln('Jogar contra o computador (2)'),
     writeln('Instruções de como jogar (3)'),
@@ -188,4 +184,5 @@ menu:-
     opcao(String), nl.
 
 main:-
+    nl, writeln('BEM VINDO AO BLACKJACK!'),
     menu().
