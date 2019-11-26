@@ -40,7 +40,7 @@ cartas(["Ás", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
 menu2jogadores:-
     writeln('Qual o nome do primeiro jogador?'), nl,
     lerString(Nome1), nl,
-    writeln('Qual o nome do primeiro jogador?'), nl,
+    writeln('Qual o nome do segundo jogador?'), nl,
     lerString(Nome2), nl,
     format('~w e ~w se preparem, o jogo vai começar!', [Nome1, Nome2]), nl,
     format('~w, você quer tirar uma carta? y/n? ', [Nome1]), nl,
@@ -93,9 +93,9 @@ verifica_resp(Resposta, 1, 2):-
         ; Resposta == "Y"
         -> retira_carta(1)
         ; Resposta == "n"
-        -> retira_carta(2)
+        -> passa_jogada(2)
         ; Resposta == "N"
-        -> retira_carta(2)
+        -> passa_jogada(2)
         ; writeln('Opção inválida, escolha entre y/n.'), nl,
         lerString(E), verifica_resp(E, 1, 2)
         ).
@@ -142,7 +142,33 @@ alteraCartas(Element):-
     write(Element),nl,
     retract(cartas(Cartas)),
     assert(cartas(NewCartas)).
-    
+
+resultado_final(1,2) :-
+    nl, writeln("o vencedor foi Matheus").
+    writeln("deseja jogar novamente?")
+    lerString(Str), nl,
+    verifica_resp(Str,3).
+
+
+
+verifica_resp(Resposta, 3) :- 
+    (   Resposta == "y"
+        -> menu().
+        ; Resposta == "Y"
+        -> menu().
+        ; Resposta == "n"
+        -> nl, writeln('BEM VINDO AO BLACKJACK!')
+        ; Resposta == "N"
+        -> nl, writeln('BEM VINDO AO BLACKJACK!')
+        ; writeln('Opção inválida, escolha entre y/n.'), nl,
+        lerString(E), verifica_resp(3).
+        ).
+
+passa_jogada(2) :-
+    nl, write("Player 2, você quer tirar uma carta? (y/n) "), nl,
+    lerString(Str), nl,
+    verifica_resp(Str, 2, 1).
+
 
 retira_carta(1) :-
     cartas(List),
@@ -159,7 +185,7 @@ retira_carta(2) :-
     alteraCartas(Element), nl,
     write("Player 2, você quer tirar uma carta? (y/n) "), nl,
     lerString(Str), nl,
-    verifica_resp(Str, 1, 2).
+    verifica_resp(Str, 2, 1).
 
 retira_carta(c) :-
     cartas(List),
