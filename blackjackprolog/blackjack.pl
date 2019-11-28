@@ -43,9 +43,7 @@ menu2jogadores:-
     writeln('Qual o nome do segundo jogador?'), nl,
     lerString(Nome2), nl,
     format('~w e ~w se preparem, o jogo vai começar!', [Nome1, Nome2]), nl,
-    format('~w, você quer tirar uma carta? y/n? ', [Nome1]), nl,
-    lerString(Str),
-    verifica_resp(Str, 1, 2).
+    verifica_resp1("y", Nome1, Nome2).
     
 
 
@@ -86,31 +84,31 @@ opcao(_):-
     writeln("Operação inválida, entre uma das opções abaixo:  "),
     menu.
 
-verifica_resp(Resposta, 1, 2):-
+verifica_resp1(Resposta, Nome1, Nome2):-
     write(Resposta),
     (   Resposta == "y"
-        -> retira_carta(1)
+        -> retira_carta1(Nome1, Nome2)
         ; Resposta == "Y"
-        -> retira_carta(1)
+        -> retira_carta1(Nome1,Nome2)
         ; Resposta == "n"
-        -> passa_jogada(2)
+        -> retira_carta2(Nome2,Nome1)
         ; Resposta == "N"
-        -> passa_jogada(2)
+        -> retira_carta2(Nome2,Nome1)
         ; writeln('Opção inválida, escolha entre y/n.'), nl,
-        lerString(E), verifica_resp(E, 1, 2)
+        lerString(E), verifica_resp1(E, Nome1, Nome2)
         ).
 
-verifica_resp(Resposta, 2, 1):-
+verifica_resp2(Resposta, Nome2, Nome1):-
     (   Resposta == "y"
-        -> retira_carta(2)
+        -> retira_carta2(Nome2,Nome1)
         ; Resposta == "Y"
-        -> retira_carta(2)
+        -> retira_carta2(Nome2, Nome1)
         ; Resposta == "n"
         -> resultado_final(1,2)
         ; Resposta == "N"
         -> resultado_final(1,2)
         ; writeln('Opção inválida, escolha entre y/n.'), nl,
-        lerString(E), verifica_resp(E,2,1)
+        lerString(E), verifica_resp2(E,Nome2,Nome1)
         ).
 
 
@@ -134,7 +132,7 @@ setPontosPlayer1():-
 
 setPontosPlayer2():-
     retract(pontosplayer2(X)), NewPontosPlayer2 is X + 1,
-    assert(pontos(NewPontosPlayer1)).
+    assert(pontos(NewPontosPlayer2)).
 
 alteraCartas(Element):-
     cartas(Cartas),
@@ -144,54 +142,53 @@ alteraCartas(Element):-
     assert(cartas(NewCartas)).
 
 resultado_final(1,2) :-
-    nl, writeln("o vencedor foi Matheus").
-    writeln("deseja jogar novamente?")
+    nl, writeln("o vencedor foi Matheus"),
+    writeln("deseja jogar novamente?"),
     lerString(Str), nl,
-    verifica_resp(Str,3).
+    verifica_resp3(Str,3).
 
 
 
-verifica_resp(Resposta, 3) :- 
+verifica_resp3(Resposta, 3) :- 
     (   Resposta == "y"
-        -> menu().
+        -> menu()
         ; Resposta == "Y"
-        -> menu().
+        -> menu()
         ; Resposta == "n"
-        -> nl, writeln('BEM VINDO AO BLACKJACK!')
+        -> nl, writeln('OBRIGADO POR TER JOGADO BLACKJACK!')
         ; Resposta == "N"
-        -> nl, writeln('BEM VINDO AO BLACKJACK!')
+        -> nl, writeln('OBRIGADO POR TER JOGADO BLACKJACK!')
         ; writeln('Opção inválida, escolha entre y/n.'), nl,
-        lerString(E), verifica_resp(3).
+        lerString(E), verifica_resp3(E,3)
         ).
 
-passa_jogada(2) :-
-    nl, write("Player 2, você quer tirar uma carta? (y/n) "), nl,
+passa_jogada(Nome2, Nome1) :-
+    write("Player 2A, você quer tirar uma carta? (y/n) "), nl,
     lerString(Str), nl,
-    verifica_resp(Str, 2, 1).
+    verifica_resp2(Str, Nome2, Nome1).
 
 
-retira_carta(1) :-
+retira_carta1(Nome1,Nome2) :-
     cartas(List),
-    write(List),
     random_member(Element, List),
+    card(Element, Valor),
     alteraCartas(Element), nl,
-    write("Player 1, você quer tirar uma carta? (y/n) "), nl,
+    format('~w, você tirou a carta ~w com pontuação de ~w.', [Nome1, Element, Valor]), nl,
+    writeln("Deseja outra carta? (y/n)"),
     lerString(Str), nl,
-    verifica_resp(Str, 1, 2).
+    verifica_resp1(Str, Nome1, Nome2).
 
-retira_carta(2) :-
+retira_carta2(Nome2,Nome1) :-
     cartas(List),
     random_member(Element, List),
+    card(Element, Valor),
     alteraCartas(Element), nl,
-    write("Player 2, você quer tirar uma carta? (y/n) "), nl,
+    format('~w, você tirou a carta ~w com pontuação de ~w.', [Nome2, Element, Valor]), nl,
+    write("Deseja outra carta? (y/n) "), nl,
     lerString(Str), nl,
-    verifica_resp(Str, 2, 1).
+    verifica_resp2(Str, Nome2, Nome1).
 
-retira_carta(c) :-
-    cartas(List),
-    random_member(Element, List),
-    alteraCartas(Element),
-    verifica_resp("y", 1, 2).
+
 
 :- dynamic cartas/1.
 
