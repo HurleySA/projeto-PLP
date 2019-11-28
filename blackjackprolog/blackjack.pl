@@ -111,16 +111,25 @@ verifica_resp2(Resposta, Nome2, Nome1, Pontos2, Pontos1):-
 alteraCartas(Element):-
     cartas(Cartas),
     select(Element,Cartas ,NewCartas), nl,
-    write(Element),nl,
     retract(cartas(Cartas)),
     assert(cartas(NewCartas)).
 
 resultado_final(Nome1, Nome2, Pontos1, Pontos2) :-
-    (   Pontos1 > Pontos2
+    (   Pontos1 >  Pontos2 , Pontos1 =< 21 
         -> format('~w foi o vencedor', [Nome1]), nl, writeln("deseja jogar novamente? (y/n)"),
         lerString(E), verifica_resp3(E,3);
-        Pontos2 > Pontos1
+        Pontos2 > Pontos1 , Pontos2 =< 21
+        ->  format('~w foi o vencedor', [Nome2]),nl, writeln("deseja jogar novamente? (y/n)"),
+        lerString(E), verifica_resp(E,3);
+        Pontos2 < Pontos1 , Pontos1 > 21 , Pontos2 =< 21
         -> format('~w foi o vencedor', [Nome2]),nl, writeln("deseja jogar novamente? (y/n)"),
+        lerString(E), verifica_resp3(E,3);
+        Pontos1 < Pontos2 , Pontos2 > 21, Pontos1 =< 21
+        -> format('~w foi o vencedor', [Nome1]),nl, writeln("deseja jogar novamente? (y/n)"),
+        lerString(E), verifica_resp3(E,3);
+        Pontos1 =< 21 , Pontos2 =< 21 , Pontos1 =:= Pontos2
+        -> writeln('EMPATE'), nl,
+        writeln("deseja jogar novamente?"),
         lerString(E), verifica_resp3(E,3);
         writeln('EMPATE'), nl,
         writeln("deseja jogar novamente?"),
@@ -142,6 +151,26 @@ verifica_resp3(Resposta, 3) :-
         lerString(E), verifica_resp3(E,3)
         ).
 
+
+verifica21(Pontos1, Pontos2, Nome1, Nome2):-
+    Pontos1 >= 21,
+    retira_carta2(Nome2, Nome1, Pontos2, Pontos1).
+
+verifica21(Pontos1, Pontos2, Nome1, Nome2):-
+    writeln("Deseja outra carta? (y/n)"),
+    lerString(Str), nl,
+    verifica_resp1(Str, Nome1, Nome2, Pontos1, Pontos2).
+
+verifica21P2(Pontos2, Pontos1, Nome2, Nome1):-
+    Pontos2 >= 21,
+    resultado_final(Nome1, Nome2, Pontos1, Pontos2).
+
+verifica21P2(Pontos2, Pontos1, Nome2, Nome1):-
+
+    writeln("Deseja outra carta? (y/n) "), nl,
+    lerString(Str),
+    verifica_resp2(Str, Nome2, Nome1, Pontos2, Pontos1).
+    
 retira_carta1(Nome1,Nome2, Pontos1, Pontos2) :-
     cartas(List),
     random_member(Element, List),
@@ -149,10 +178,9 @@ retira_carta1(Nome1,Nome2, Pontos1, Pontos2) :-
     soma_pontuacao(Pontos1, Valor, Soma),
     alteraCartas(Element), nl,
     format('~w, você tirou a carta ~w com pontuação de ~w.', [Nome1, Element, Valor]), nl,
-    format('~w, sua pontuação é de ~w pontos', [Nome1,Soma]),nl,
-    writeln("Deseja outra carta? (y/n)"),
-    lerString(Str), nl,
-    verifica_resp1(Str, Nome1, Nome2, Soma, Pontos2).
+    format('~w, sua pontuação é de ~w pontos', [Nome1,Soma]),nl, verifica21(Soma, Pontos2, Nome1, Nome2).
+
+
 
 retira_carta2(Nome2,Nome1, Pontos2, Pontos1) :-
     cartas(List),
@@ -161,13 +189,16 @@ retira_carta2(Nome2,Nome1, Pontos2, Pontos1) :-
     soma_pontuacao(Pontos2, Valor, Soma),
     alteraCartas(Element), nl,
     format('~w, você tirou a carta ~w com pontuação de ~w.', [Nome2, Element, Valor]), nl,
-    format('~w, sua pontuação é de ~w pontos', [Nome2,Soma]),nl,
-    writeln("Deseja outra carta? (y/n) "), nl,
-    lerString(Str), nl,
-    verifica_resp2(Str, Nome2, Nome1, Soma, Pontos1).
+    format('~w, sua pontuação é de ~w pontos', [Nome2,Soma]),nl, verifica21P2(Soma, Pontos1, Nome2, Nome1).
 
+soma_pontuacao(Pontos, 1, Total) :-
+    (Pontos =< 11
+     -> Total is Pontos + 10;
+     Total is Pontos + 1
+    ).
 soma_pontuacao(Pontos, Somador, Total):-
     Total is Pontos + Somador.
+
 
 :- dynamic cartas/1.
 
