@@ -18,10 +18,6 @@ card("J",  10).
 card("Q",  10).
 card("K",  10).
 
-pontosplayer1(0).
-pontosplayer2(0).
-pontospc(0).
-
 cartas(["Ás", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
         "Ás", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
         "Ás", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
@@ -43,7 +39,7 @@ menu2jogadores:-
     writeln('Qual o nome do segundo jogador?'), nl,
     lerString(Nome2), nl,
     format('~w e ~w se preparem, o jogo vai começar!', [Nome1, Nome2]), nl,
-    verifica_resp1("y", Nome1, Nome2).
+    verifica_resp1("y", Nome1, Nome2, 0, 0).
     
 
 
@@ -84,55 +80,33 @@ opcao(_):-
     writeln("Operação inválida, entre uma das opções abaixo:  "),
     menu.
 
-verifica_resp1(Resposta, Nome1, Nome2):-
+verifica_resp1(Resposta, Nome1, Nome2,Pontos1, Pontos2):-
     write(Resposta),
     (   Resposta == "y"
-        -> retira_carta1(Nome1, Nome2)
+        -> retira_carta1(Nome1, Nome2, Pontos1, Pontos2)
         ; Resposta == "Y"
-        -> retira_carta1(Nome1,Nome2)
+        -> retira_carta1(Nome1,Nome2, Pontos1, Pontos2)
         ; Resposta == "n"
-        -> retira_carta2(Nome2,Nome1)
+        -> retira_carta2(Nome2,Nome1, Pontos2, Pontos1)
         ; Resposta == "N"
-        -> retira_carta2(Nome2,Nome1)
+        -> retira_carta2(Nome2,Nome1, Pontos2, Pontos1)
         ; writeln('Opção inválida, escolha entre y/n.'), nl,
-        lerString(E), verifica_resp1(E, Nome1, Nome2)
+        lerString(E), verifica_resp1(E, Nome1, Nome2,Pontos1, Pontos2)
         ).
 
-verifica_resp2(Resposta, Nome2, Nome1):-
+verifica_resp2(Resposta, Nome2, Nome1, Pontos2, Pontos1):-
     (   Resposta == "y"
-        -> retira_carta2(Nome2,Nome1)
+        -> retira_carta2(Nome2,Nome1, Pontos2, Pontos1)
         ; Resposta == "Y"
-        -> retira_carta2(Nome2, Nome1)
+        -> retira_carta2(Nome2, Nome1, Pontos2, Pontos1)
         ; Resposta == "n"
-        -> resultado_final(1,2)
+        -> resultado_final(Nome1, Nome2, Pontos1, Pontos2)
         ; Resposta == "N"
-        -> resultado_final(1,2)
+        -> resultado_final(Nome1, Nome2, Pontos1, Pontos2)
         ; writeln('Opção inválida, escolha entre y/n.'), nl,
-        lerString(E), verifica_resp2(E,Nome2,Nome1)
+        lerString(E), verifica_resp2(E,Nome2,Nome1, Pontos2, Pontos1)
         ).
 
-
-% verifica_resp("n", 1, C):-
-%     playerpc(cartas(Cartas)).
-
-% verifica_resp("N", 1, C):-
-%     playerpc(cartas(Cartas)).
-
-% verifica_resp("Y", 1, C):-
-%     player1(cartas(Cartas)).
-
-
-% verifica_resp("n", 1, C):-
-%     playerpc(cartas(Cartas)).
-
-
-setPontosPlayer1():-
-    retract(pontosplayer1(X)), NewPontosPlayer1 is X + 1,
-    assert(pontos(NewPontosPlayer1)).
-
-setPontosPlayer2():-
-    retract(pontosplayer2(X)), NewPontosPlayer2 is X + 1,
-    assert(pontos(NewPontosPlayer2)).
 
 alteraCartas(Element):-
     cartas(Cartas),
@@ -141,12 +115,18 @@ alteraCartas(Element):-
     retract(cartas(Cartas)),
     assert(cartas(NewCartas)).
 
-resultado_final(1,2) :-
-    nl, writeln("o vencedor foi Matheus"),
-    writeln("deseja jogar novamente?"),
-    lerString(Str), nl,
-    verifica_resp3(Str,3).
+resultado_final(Nome1, Nome2, Pontos1, Pontos2) :-
+    (   Pontos1 > Pontos2
+        -> format('~w foi o vencedor', [Nome1]), nl, writeln("deseja jogar novamente? (y/n)"),
+        lerString(E), verifica_resp3(E,3);
+        Pontos2 > Pontos1
+        -> format('~w foi o vencedor', [Nome2]),nl, writeln("deseja jogar novamente? (y/n)"),
+        lerString(E), verifica_resp3(E,3);
+        writeln('EMPATE'), nl,
+        writeln("deseja jogar novamente?"),
+        lerString(E), verifica_resp3(E,3)
 
+    ).
 
 
 verifica_resp3(Resposta, 3) :- 
@@ -162,39 +142,34 @@ verifica_resp3(Resposta, 3) :-
         lerString(E), verifica_resp3(E,3)
         ).
 
-passa_jogada(Nome2, Nome1) :-
-    write("Player 2A, você quer tirar uma carta? (y/n) "), nl,
-    lerString(Str), nl,
-    verifica_resp2(Str, Nome2, Nome1).
-
-
-retira_carta1(Nome1,Nome2) :-
+retira_carta1(Nome1,Nome2, Pontos1, Pontos2) :-
     cartas(List),
     random_member(Element, List),
     card(Element, Valor),
+    soma_pontuacao(Pontos1, Valor, Soma),
     alteraCartas(Element), nl,
     format('~w, você tirou a carta ~w com pontuação de ~w.', [Nome1, Element, Valor]), nl,
+    format('~w, sua pontuação é de ~w pontos', [Nome1,Soma]),nl,
     writeln("Deseja outra carta? (y/n)"),
     lerString(Str), nl,
-    verifica_resp1(Str, Nome1, Nome2).
+    verifica_resp1(Str, Nome1, Nome2, Soma, Pontos2).
 
-retira_carta2(Nome2,Nome1) :-
+retira_carta2(Nome2,Nome1, Pontos2, Pontos1) :-
     cartas(List),
     random_member(Element, List),
     card(Element, Valor),
+    soma_pontuacao(Pontos2, Valor, Soma),
     alteraCartas(Element), nl,
     format('~w, você tirou a carta ~w com pontuação de ~w.', [Nome2, Element, Valor]), nl,
-    write("Deseja outra carta? (y/n) "), nl,
+    format('~w, sua pontuação é de ~w pontos', [Nome2,Soma]),nl,
+    writeln("Deseja outra carta? (y/n) "), nl,
     lerString(Str), nl,
-    verifica_resp2(Str, Nome2, Nome1).
+    verifica_resp2(Str, Nome2, Nome1, Soma, Pontos1).
 
-
+soma_pontuacao(Pontos, Somador, Total):-
+    Total is Pontos + Somador.
 
 :- dynamic cartas/1.
-
-:- dynamic pontosplayer1/1.
-
-:- dynamic pontosplayer2/1.
 
 :- dynamic pontospc/1.
 menu:-
