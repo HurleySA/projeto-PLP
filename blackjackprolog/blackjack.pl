@@ -24,14 +24,12 @@ cartas(["Ás", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
         "Ás", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]).
     
 
-% menu1jogador:-
-%     writeln('Qual o seu nome jogador?'),
-%     lerString(Nome),
-%     format('~w se prepare, o jogo vai começar!', [Nome]), nl,
-%     writeln('Quer jogar? y/n'),
-%     lerString(Str),
-%     verifica_resp(Str, 1, c),
-%     nl.
+menu1jogador:-
+    writeln('Qual o seu nome jogador?'),
+    lerString(Nome),
+    format('~w se prepare, o jogo vai começar!', [Nome]), nl,
+    verifica_resp_comp("y", Nome, "computador", 0, 0),
+    nl.
 
 menu2jogadores:-
     writeln('Qual o nome do primeiro jogador?'), nl,
@@ -80,6 +78,21 @@ opcao(_):-
     writeln("Operação inválida, entre uma das opções abaixo:  "),
     menu.
 
+verifica_resp_comp(Resposta, NomeJog, NomeComp,PontosJog, PontosComp):-
+    write(Resposta),
+    (   Resposta == "y"
+        -> retira_carta_jog(NomeJog, NomeComp, PontosJog, PontosComp)
+        ; Resposta == "Y"
+        -> retira_carta_jog(NomeJog, NomeComp, PontosJog, PontosComp)
+        ; Resposta == "n"
+        -> retira_carta_comp(NomeComp,NomeJog, PontosComp, PontosJog)
+        ; Resposta == "N"
+        -> retira_carta_comp(NomeComp,NomeJog, PontosComp, PontosJog)
+        ; writeln('Opção inválida, escolha entre y/n.'), nl,
+        lerString(E), verifica_resp_comp(E, NomeJog, NomeComp,PontosJog, PontosComp)
+        ).
+
+
 verifica_resp1(Resposta, Nome1, Nome2,Pontos1, Pontos2):-
     write(Resposta),
     (   Resposta == "y"
@@ -114,43 +127,59 @@ alteraCartas(Element):-
     retract(cartas(Cartas)),
     assert(cartas(NewCartas)).
 
+
 resultado_final(Nome1, Nome2, Pontos1, Pontos2) :-
     (   Pontos1 >  Pontos2 , Pontos1 =< 21 
         -> format('~w foi o vencedor', [Nome1]), nl, writeln("deseja jogar novamente? (y/n)"),
-        lerString(E), verifica_resp3(E,3);
+        lerString(E), verifica_resp3(E);
         Pontos2 > Pontos1 , Pontos2 =< 21
         ->  format('~w foi o vencedor', [Nome2]),nl, writeln("deseja jogar novamente? (y/n)"),
-        lerString(E), verifica_resp(E,3);
+        lerString(E), verifica_resp3(E);
         Pontos2 < Pontos1 , Pontos1 > 21 , Pontos2 =< 21
         -> format('~w foi o vencedor', [Nome2]),nl, writeln("deseja jogar novamente? (y/n)"),
-        lerString(E), verifica_resp3(E,3);
+        lerString(E), verifica_resp3(E);
         Pontos1 < Pontos2 , Pontos2 > 21, Pontos1 =< 21
         -> format('~w foi o vencedor', [Nome1]),nl, writeln("deseja jogar novamente? (y/n)"),
-        lerString(E), verifica_resp3(E,3);
+        lerString(E), verifica_resp3(E);
         Pontos1 =< 21 , Pontos2 =< 21 , Pontos1 =:= Pontos2
         -> writeln('EMPATE'), nl,
         writeln("deseja jogar novamente?"),
-        lerString(E), verifica_resp3(E,3);
+        lerString(E), verifica_resp3(E);
         writeln('EMPATE'), nl,
         writeln("deseja jogar novamente?"),
-        lerString(E), verifica_resp3(E,3)
+        lerString(E), verifica_resp3(E)
 
     ).
 
 
-verifica_resp3(Resposta, 3) :- 
+verifica_resp3(Resposta) :- 
     (   Resposta == "y"
-        -> menu()
+        -> menu
         ; Resposta == "Y"
-        -> menu()
+        -> menu
         ; Resposta == "n"
         -> nl, writeln('OBRIGADO POR TER JOGADO BLACKJACK!')
         ; Resposta == "N"
         -> nl, writeln('OBRIGADO POR TER JOGADO BLACKJACK!')
         ; writeln('Opção inválida, escolha entre y/n.'), nl,
-        lerString(E), verifica_resp3(E,3)
+        lerString(E), verifica_resp3(E)
         ).
 
+verifica21Jog(PontosJog,PontosComp, NomeJog, NomeComp):-
+    PontosJog >= 21,
+    retira_carta_comp(NomeComp,NomeJog,PontosComp,PontosJog).
+
+verifica21Jog(PontosJog,PontosComp, NomeJog, NomeComp):-
+    writeln("Deseja outra carta? (y/n)"),
+    lerString(Str), nl,
+    verifica_resp_comp(Str, NomeJog, NomeComp, PontosJog, PontosComp).
+
+verifica21Comp(PontosComp,PontosJog,NomeComp,NomeJog) :-
+    PontosComp >= 17,
+    resultado_final(NomeJog, NomeComp, PontosJog, PontosComp).
+
+verifica21Comp(PontosComp,PontosJog,NomeComp,NomeJog) :-
+    retira_carta_comp(NomeComp,NomeJog, PontosComp, PontosJog).
 
 verifica21(Pontos1, Pontos2, Nome1, Nome2):-
     Pontos1 >= 21,
@@ -170,7 +199,26 @@ verifica21P2(Pontos2, Pontos1, Nome2, Nome1):-
     writeln("Deseja outra carta? (y/n) "), nl,
     lerString(Str),
     verifica_resp2(Str, Nome2, Nome1, Pontos2, Pontos1).
-    
+
+
+retira_carta_jog(NomeJog, NomeComp, PontosJog, PontosComp) :-
+    cartas(List),
+    random_member(Element, List),
+    card(Element, Valor),
+    soma_pontuacao(PontosJog, Valor, Soma),
+    alteraCartas(Element), nl,
+    format('~w, você tirou a carta ~w com pontuação de ~w.', [NomeJog, Element, Valor]), nl,
+    format('~w, sua pontuação é de ~w pontos', [NomeJog,Soma]),nl, verifica21Jog(Soma, PontosComp, NomeJog, NomeComp).
+
+retira_carta_comp(NomeComp, NomeJog, PontosComp, PontosJog) :-
+    cartas(List),
+    random_member(Element, List),
+    card(Element, Valor),
+    soma_pontuacao(PontosComp, Valor, Soma),
+    alteraCartas(Element), nl,
+    format('~w, você tirou a carta ~w com pontuação de ~w.', [NomeComp, Element, Valor]), nl,
+    format('~w, sua pontuação é de ~w pontos', [NomeComp,Soma]),nl, verifica21Comp(Soma, PontosJog, NomeComp, NomeJog).
+
 retira_carta1(Nome1,Nome2, Pontos1, Pontos2) :-
     cartas(List),
     random_member(Element, List),
@@ -200,9 +248,8 @@ soma_pontuacao(Pontos, Somador, Total):-
     Total is Pontos + Somador.
 
 
-:- dynamic cartas/1.
+:- dynamic cartas/1. 
 
-:- dynamic pontospc/1.
 menu:-
     writeln('Jogar com amigo (1)'),
     writeln('Jogar contra o computador (2)'),
@@ -214,4 +261,4 @@ menu:-
 
 main:-
     nl, writeln('BEM VINDO AO BLACKJACK!'),
-    menu().
+    menu.
